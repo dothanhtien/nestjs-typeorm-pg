@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15.2-alpine
+    networks:
+      - postgres
+    ports:
+      - 5432:5432
+    volumes: 
+      - postgresql:/var/lib/postgresql/data
+    env_file:
+      - docker.env
+
+  pgadmin:
+    image: dpage/pgadmin4:6.21
+    networks:
+      - postgres
+    ports:
+      - 8080:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - docker.env
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes :
+  postgresql:
+  pgadmin:
