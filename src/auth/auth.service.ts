@@ -10,4 +10,9 @@ export class AuthService {
     const hashedPassword = bcrypt.hashSync(password, salt);
     return hashedPassword;
   }
+
+  comparePassword(password: string, hashedPassword: string) {
+    const isMatch = bcrypt.compareSync(password, hashedPassword);
+    return isMatch;
+  }
 }

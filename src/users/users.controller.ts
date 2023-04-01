@@ -5,7 +5,6 @@ import {
   Get,
   Post,
   Req,
-  Res,
   UseInterceptors,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
