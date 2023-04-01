@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import CreateUserDTO from './dto/create-user.dto';
 import User from './user.entity';
+import CreateUserDTO from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,5 +19,10 @@ export class UsersService {
     const newUser = this.usersRepository.create(createUserData);
     await this.usersRepository.save(newUser);
     return newUser;
+  }
+
+  async checkIfUserExists(email: string): Promise<boolean> {
+    const count = await this.usersRepository.countBy({ email });
+    return count > 0;
   }
 }
