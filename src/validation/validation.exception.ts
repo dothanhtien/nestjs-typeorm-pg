@@ -1,7 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 
 interface Error {
-  [x: string]: string;
+  field: string;
+  message: string;
 }
 
 export class ValidationException extends BadRequestException {

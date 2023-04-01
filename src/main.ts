@@ -14,9 +14,8 @@ async function bootstrap() {
       exceptionFactory: (errors: ValidationError[]) => {
         const messages = errors.map((error) => {
           return {
-            [error.property]: Object.values(error.constraints)
-              .join('. ')
-              .trim(),
+            field: error.property,
+            message: Object.values(error.constraints).join('. ').trim(),
           };
         });
         return new ValidationException(messages);
