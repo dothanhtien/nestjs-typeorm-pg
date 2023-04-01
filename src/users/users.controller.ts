@@ -5,20 +5,23 @@ import {
   Get,
   Post,
   Req,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import JwtAuthGuard from 'src/auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 
-@Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
+@Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();

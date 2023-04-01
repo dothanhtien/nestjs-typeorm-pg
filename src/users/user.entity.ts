@@ -11,28 +11,28 @@ class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Expose({ name: 'firstName', toPlainOnly: true })
   @Column({ nullable: true })
-  @Expose({ name: 'firstName' })
   first_name: string;
 
+  @Expose({ name: 'lastName', toPlainOnly: true })
   @Column({ nullable: true })
-  @Expose({ name: 'lastName' })
   last_name: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Column()
   @Exclude()
+  @Column()
   password: string;
 
+  @Expose({ name: 'createdAt', toPlainOnly: true })
   @CreateDateColumn()
-  @Expose({ name: 'createdAt' })
   created_at: Date;
 
+  @Expose({ name: 'updatedAt', toPlainOnly: true })
   @Column({ type: 'timestamp', nullable: true })
   // use @UpdateDateColumn with default value = null will always generate in a new migration file
-  @Expose({ name: 'updatedAt' })
   updated_at: Date;
 }
 

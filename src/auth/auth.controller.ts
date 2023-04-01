@@ -3,26 +3,33 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
+  Request,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './local-auth.guard';
 import RegisterDTO from './register.dto';
+import RequestWithUser from './interface/request-with-user.interface';
+import { plainToClass } from 'class-transformer';
+import User from 'src/users/user.entity';
+import JwtAuthGuard from './jwt-auth.guard';
 
-@Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
+@Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
 
-  @Post('/register')
   @HttpCode(201)
+  @Post('/register')
   async register(@Body() registerData: RegisterDTO) {
     const isUserExist = await this.usersService.checkIfUserExists(
       registerData.email,
@@ -46,21 +53,18 @@ export class AuthController {
     return { data: newUser };
   }
 
-  @Post('login')
   @HttpCode(200)
-  async logIn(@Req() req: Request) {
-    const { email, password } = req.body;
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async logIn(@Req() req: RequestWithUser) {
+    const { user } = req;
+    const accessToken = this.authService.generateAccessToken(user.id);
+    return { data: plainToClass(User, { ...user, accessToken }) };
+  }
 
-    const user = await this.usersService.getUserByEmail(email);
-    if (!user) {
-      throw new BadRequestException('Email or password is invalid');
-    }
-
-    const isMatch = this.authService.comparePassword(password, user.password);
-    if (!isMatch) {
-      throw new BadRequestException('Email or password is invalid');
-    }
-
-    return { data: user };
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  getProfile(@Request() req: RequestWithUser) {
+    return { data: req.user };
   }
 }
