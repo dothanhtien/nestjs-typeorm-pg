@@ -10,6 +10,11 @@ services:
       - postgresql:/var/lib/postgresql/data
     env_file:
       - docker.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -h postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4:6.21
@@ -28,14 +33,15 @@ services:
       context: .
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules/
-    command: npm run start:dev
+      - /usr/src/app/node_modules
+    command: 'sh -c "npm run migration:run && npm run start:dev"'
     env_file:
       - .env
     ports:
       - 3000:3000
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - postgres
 
