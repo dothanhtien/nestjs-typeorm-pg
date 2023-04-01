@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
-import JwtAuthGuard from 'src/auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -21,7 +20,6 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();
