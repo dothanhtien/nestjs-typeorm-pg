@@ -14,7 +14,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U admin -h postgres"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 30
 
   pgadmin:
     image: dpage/pgadmin4:6.21
