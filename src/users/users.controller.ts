@@ -8,8 +8,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   UnauthorizedException,
   UseInterceptors,
 } from '@nestjs/common';
@@ -20,6 +22,8 @@ import CreateUserDTO from './dto/create-user.dto';
 import UpdateUserDTO from './dto/update-user.dto';
 import User from './user.entity';
 import { UsersService } from './users.service';
+import PaginationParams from 'src/utils/types/pagination-params.type';
+import PaginationResponse from 'src/utils/interfaces/pagination-response';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
@@ -30,9 +34,11 @@ export class UsersController {
   ) {}
 
   @Get()
-  async getAllUsers(): Promise<{ data: User[] }> {
-    const users = await this.usersService.getAllUsers();
-    return { data: users };
+  async getUsers(
+    @Query() { page, limit }: PaginationParams,
+  ): Promise<{ data: User[]; pagination: PaginationResponse }> {
+    const { data, pagination } = await this.usersService.getUsers(page, limit);
+    return { data, pagination };
   }
 
   @Get(':id')

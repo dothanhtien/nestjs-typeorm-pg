@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
+import { join } from 'path';
 import { DataSource } from 'typeorm';
 
 config();
