@@ -14,8 +14,8 @@ import {
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
-import RegisterDTO from './register.dto';
-import RequestWithUser from './interface/request-with-user.interface';
+import RegisterDTO from './dtos/register.dto';
+import RequestWithUser from './interfaces/request-with-user.interface';
 import { plainToClass } from 'class-transformer';
 import User from 'src/users/user.entity';
 import { Public } from './decorators/public.decorator';
@@ -32,7 +32,7 @@ export class AuthController {
   @Post('/register')
   @Public()
   async register(@Body() registerData: RegisterDTO) {
-    const isUserExist = await this.usersService.checkIfUserExists(
+    const isUserExist = await this.usersService.checkIfUserExistsByEmail(
       registerData.email,
     );
     if (isUserExist) {

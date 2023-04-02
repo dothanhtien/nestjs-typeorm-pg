@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from './user.entity';
 import CreateUserDTO from './dto/create-user.dto';
+import UpdateUserDTO from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +32,29 @@ export class UsersService {
     return newUser;
   }
 
-  async checkIfUserExists(email: string): Promise<boolean> {
+  async updateUser(id: string, updateUserData: UpdateUserDTO) {
+    // const user = await this.usersRepository.update(id, { ...updateUserData });
+    // return user;
+
+    const user = await this.usersRepository.findOneBy({ id });
+    const updatedUser = await this.usersRepository.save({
+      ...user,
+      ...updateUserData,
+    });
+    return updatedUser;
+  }
+
+  async deleteUserById(id: string) {
+    const result = await this.usersRepository.delete({ id });
+    return result.affected > 0;
+  }
+
+  async checkIfUserExistsById(id: string): Promise<boolean> {
+    const count = await this.usersRepository.countBy({ id });
+    return count > 0;
+  }
+
+  async checkIfUserExistsByEmail(email: string): Promise<boolean> {
     const count = await this.usersRepository.countBy({ email });
     return count > 0;
   }

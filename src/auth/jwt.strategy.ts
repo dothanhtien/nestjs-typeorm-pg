@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { Strategy } from 'passport-custom';
 import { UsersService } from 'src/users/users.service';
-import TokenPayload from './interface/token-payload.interface';
+import TokenPayload from './interfaces/token-payload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -26,7 +26,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       this.jwtService.verify(token);
 
       const payload = this.jwtService.decode(token) as TokenPayload;
-      console.log({ payload });
 
       const userId = payload.sub;
       const user = await this.usersService.getUserById(userId);

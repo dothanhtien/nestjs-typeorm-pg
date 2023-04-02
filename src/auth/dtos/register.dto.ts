@@ -20,7 +20,9 @@ class RegisterDTO {
   @MaxLength(100, {
     message: 'Password confirmation has exceeded 100 characters',
   })
-  @MinLength(6, { message: 'Password must be at least 6 characters' })
+  @MinLength(6, {
+    message: 'Password confirmation must be at least 6 characters',
+  })
   @IsNotEmpty({ message: 'Password confirmation is required' })
   passwordConfirmation: string;
 }
